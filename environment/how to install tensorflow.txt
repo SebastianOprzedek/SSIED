@@ -1,0 +1,8 @@
+Tensorflow nie jest wspierane we wszystkich werjsach Pythona. Rekomendujê u¿yæ 3.6 (https://www.python.org/ftp/python/3.6.6/python-3.6.6-amd64.exe).
+Na wersji 3.7 tensorflow nie chcia³ mi zadzia³aæ.
+
+Wersjê pythona mo¿na sprawdziæ wpisuj¹c po prostu "python". Powinna otworzy siê konsola pythona, a w jej nag³ówku widaæ wersjê pythona oraz czy jest x64 (tensorflow wymaga 64-bitowego pythona).
+
+Tensorflow instalujemy za pomoc¹:
+
+pip install tensorflow
