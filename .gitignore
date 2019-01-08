@@ -2,3 +2,4 @@ files/*
 !files/sample_submission.csv.zip
 !files/test.csv.zip
 !files/train.csv.zip
+/.vs
