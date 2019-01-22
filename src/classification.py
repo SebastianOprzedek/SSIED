@@ -128,7 +128,32 @@ test_data = keras.preprocessing.sequence.pad_sequences(test_data,
                                                        padding='post',
                                                        maxlen=256)
 
-													   
+### Metryki - ocena sieci
+K = keras.backend
+
+## Precyzja
+def precision(y_true, y_pred):
+    true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+    predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
+    precision = true_positives / (predicted_positives + K.epsilon())
+    return precision
+
+## Czułość
+def recall(y_true, y_pred):
+    true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+    possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
+    recall = true_positives / (possible_positives + K.epsilon())
+    return recall
+
+## Specyficzność
+def specificity(y_pred, y_true):
+    neg_y_true = 1 - y_true
+    neg_y_pred = 1 - y_pred
+    false_positive = K.sum(neg_y_true * y_pred)
+    true_negative = K.sum(neg_y_true * neg_y_pred)
+    specificity = true_negative / (true_negative + false_positive + K.epsilon())
+    return specificity
+
 ### Model
 vocab_size = len(word_index) #600000
 model = keras.Sequential()
@@ -138,8 +163,8 @@ model.add(keras.layers.Dense(16, activation=tf.nn.relu))
 model.add(keras.layers.Dense(1, activation=tf.nn.sigmoid))
 model.summary()
 model.compile(optimizer=tf.train.AdamOptimizer(),
-              loss='binary_crossentropy',
-              metrics=['accuracy'])
+              loss='mean_squared_error',
+              metrics=['accuracy',precision, recall, specificity])
 
 			  
 ### Training and testing	
@@ -176,4 +201,14 @@ submission= pd.DataFrame(
         columns = ['qid', 'prediction'])
 submission.to_csv('submission.csv', index=False)
 
-print(results)
+### Miary jakości
+loss = round(results[0]*100,2)
+acc = round(results[1]*100,2)
+prec = round(results[2]*100,2)
+rec = round(results[3]*100,2)
+spec = round(results[4]*100,2)
+print('\nLoss: ', loss, '%') # strata
+print('Accuracy: ', acc, '%') # dokładność
+print('Precision: ', prec, '%') # precyzja
+print('Recall: ', rec, '%') # czułość
+print('Specificity: ', spec, '%') # specyficzność
